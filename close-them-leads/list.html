@@ -1,0 +1,66 @@
+<div id="loading">
+    <img src="/images/ajax-loader.gif" />
+</div><!-- loading -->
+<div id="content">
+<form>
+    <table class="list">
+    <tr>
+        <td class="checkboxes">&nbsp;</td>
+        <td class="bold name">Full Name</td>
+        <td class="bold email">Email</td>
+        <td class="bold status">Status</td>
+        <td class="bold guid">Guid</td>
+    </tr>
+    {% for lead in leads %}
+    <tr>
+        <td><input type="checkbox" name="guid" id="{{ lead.guid }}" /></td>
+        <td class="name">{{ lead.firstName }} {{ lead.lastName }}</td>
+        <td class="email">{{ lead.email }}</td>
+        <td class="status"> {% ifnotequal lead.closedAt 0 %}
+                                {{ lead.closedAt }}
+                            {% else %}Open
+                            {% endifnotequal %}</td>
+        <td class="guid">{{ lead.guid }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    <br />
+    <input type="button" value="Close 'em!" id="close" name="close" /><span id="page">Page {{ page }}</span>
+</form>
+<form class="offset" id="bottom_nav">
+<input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
+<input type="button" name="prev" value="Prev" id="prev" />{% if are_more %} | <input type="button" name="next" value="Next" id="next" />{% endif %}
+</form>
+</div><!-- content -->
+<script type="text/javascript">
+$('#prev').click(function() {
+    $('#content').fadeOut('fast', 'swing', function() {
+        $('#loading').fadeIn('fast');
+    });
+    var post_data = {
+        offset: $('#offset').val(),
+        prev: 'prev'
+    }
+    $.post("/list", post_data, function(data) {
+        $('#content').html(data);
+        $('#loading').fadeOut('fast', 'swing', function() {
+            $('#content').fadeIn('fast');
+        });
+    })
+})
+$('#next').click(function() {
+    $('#content').fadeOut('fast', 'swing', function() {
+        $('#loading').fadeIn('fast');
+    });
+    var post_data = {
+        offset: $('#offset').val(),
+        next: 'next'
+    }
+    $.post("/list", post_data, function(data) {
+        $('#content').html(data);
+        $('#loading').fadeOut('fast', 'swing', function() {
+            $('#content').fadeIn('fast');
+        });
+    })
+})
+</script>

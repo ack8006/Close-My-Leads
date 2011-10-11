@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block page_title %}Welcome{% endblock page_title%}
+
+{% block content_area %}
+<div id="loading">
+<img src="/images/ajax-loader.gif" />
+</div><!-- loading -->
+<div id="content">
+<form><table>
+<tr><td>Hub ID: </td><td><input type="text" name="portalId" id="portalId"></td></tr>
+<tr><td></td>&nbsp;<td><span class="validate portal">Hub ID is required!</span>&nbsp;</td></tr>
+<tr><td>API key: </td><td><input type="text" name="api_key" value="" id="api_key"></td></tr>
+<tr><td></td>&nbsp;<td><span class="validate key">API key is required!</span>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td><input type="button" value="Submit" id="submit"></td></tr>
+</table></form>
+</div><!-- content -->
+{% endblock content_area %}
+{% block scripts %}
+<script type="text/javascript">
+var showit = function() {
+    $('#content').fadeOut('fast', 'swing', function() {
+        $('#loading').fadeIn('fast');
+    });
+}
+var swapit = function(data) {
+    $('#content').html(data);
+    $('#loading').fadeOut('fast', 'swing', function() {
+        $('#content').fadeIn('fast');
+    });
+}
+$(function() {
+    $('#submit').click(function() {
+        if (!$('#portalId').val() || $('#portalId').val()=='None') {
+            $('.validate.portal').show();
+            return false;
+        }
+        if ($('#portalId').val()) {
+            $('.validate.portal').hide();
+        }
+        if (!$('#api_key').val()) {
+            $('.validate.key').show();
+            return false;
+        }
+        if ($('#api_key').val()) {
+            $('.validate.key').hide();
+        }
+        showit();
+    var post_data = {
+            portalId: $('#portalId').val(),
+            api_key: $('#api_key').val()
+        }
+        $.post("/", post_data, function(data) { swapit(data) });
+    })
+})
+</script>
+{% endblock scripts %}
