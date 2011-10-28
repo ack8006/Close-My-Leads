@@ -1,0 +1,73 @@
+<form>
+    <table class="list">
+    <tr>
+        <td class="checkboxes"><input type="checkbox" id="select_all" /></td>
+        <td class="bold name">Full Name</td>
+        <td class="bold email">Email</td>
+        <td class="bold status">Status</td>
+        <td class="bold guid">Guid</td>
+    </tr>
+    {% for lead in leads %}
+    <tr>
+        <td><input type="checkbox" class="lead_box" name="guid" value="{{ lead.guid }}" /></td>
+        <td class="name">{{ lead.firstName }} {{ lead.lastName }}</td>
+        <td class="email">{{ lead.email }}</td>
+        <td class="status"> {% ifnotequal lead.closedAt 0 %}
+                                {{ lead.closedAt }}
+                            {% else %}Open
+                            {% endifnotequal %}</td>
+        <td class="guid">{{ lead.guid }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    <br />
+    <input type="button" value="Close 'em!" class="close_button" name="close" /><span id="page">Page {{ page }}</span>
+</form>
+<form class="offset" id="bottom_nav">
+<input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
+<input type="button" name="prev" value="Prev" id="prev" />{% if are_more %} | <input type="button" name="next" value="Next" id="next" />{% endif %}
+</form>
+<script type="text/javascript">
+var checko = false;
+var showit = function() {
+    $('#content').fadeOut('fast', 'swing', function() {
+        $('#loading').fadeIn('fast');
+    });
+}
+var swapit = function(data) {
+    $('#content').html(data);
+    $('#loading').fadeOut('fast', 'swing', function() {
+        $('#content').fadeIn('fast');
+    });
+}
+$(function(){
+  $('.close_button').click(function(){
+      showit();
+      var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close=close";
+      $.post('/close', post_data, function(data) { swapit(data) });
+  })
+  $('#prev').click(function() {
+      showit();
+      var post_data = {
+          offset: $('#offset').val(),
+          prev: 'prev'
+      }
+      $.post("/list", post_data, function(data) { swapit(data) });
+  })
+  $('#next').click(function() {
+      showit();
+      var post_data = {
+          offset: $('#offset').val(),
+          next: 'next'
+      }
+      $.post("/list", post_data, function(data) { swapit(data) });
+  })
+  $('#select_all').click(function(){
+      if (!$('#select_all')[0].checked) {
+          $('input[type="checkbox"]').attr('checked', 'true');
+      } else {
+          $('input[type="checkbox"]').removeAttr('checked');
+      }
+  })
+});
+</script>
