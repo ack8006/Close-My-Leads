@@ -21,13 +21,19 @@
     {% endfor %}
     </table>
     <br />
-    <button class="btn danger close_button" name="close">Close Leads</button>
+    <div class="close_button">
+        <button class="btn danger close_button" name="close">Close Leads</button>
+    </div>
     <!-- <input type="button" value="Close 'em!" class="close_button" name="close" /> -->
 </form>
 <form class="offset" id="bottom_nav">
-    <span class="page">Page {{ page }}</span>
-    <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
-    <input type="button" name="prev" value="Prev" id="prev" class="btn default" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" id="next" class="btn default" />{% endif %}
+    <div class="pagenum">
+        <span class="page">Page {{ page }}</span>
+    </div>
+    <div class="prevnext">
+        <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
+        <input type="button" name="prev" value="Prev" id="prev" class="btn default" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" id="next" class="btn default" />{% endif %}
+    </div>
 </form>
 <script type="text/javascript">
 var showit = function() {

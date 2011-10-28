@@ -59,8 +59,18 @@
   line-height:1.1;
 }
 
-button #close_leads {
-  padding-left:25px!important;
+.close_button {
+  margin-left:12px!important;
+}
+
+.prevnext {
+  float:right;
+  margin: -20px 10px 0 0;
+}
+
+.pagenum {
+  float:right;
+  margin: -40px 10px 0 0;
 }
 
 .bold {
