@@ -2,7 +2,7 @@ from django.utils import simplejson as json
 import urllib2
 import base64
 import time
-import Crypto
+#import Crypto
 
 
 def decoded_cookie_str(encoded_cookie_str):

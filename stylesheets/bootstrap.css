@@ -59,7 +59,9 @@
   line-height:1.1;
 }
 
-
+button #close_leads {
+  padding-left:25px!important;
+}
 
 .bold {
   font-weight:bold;
@@ -103,7 +105,7 @@ table.list {
   width:20px;
 }
 
-#page {
+.page {
   float:right;
   padding-right: 26px;
   padding-top: 25px;

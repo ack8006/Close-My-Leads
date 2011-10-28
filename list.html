@@ -21,14 +21,15 @@
     {% endfor %}
     </table>
     <br />
-    <input type="button" value="Close 'em!" class="close_button" name="close" /><span id="page">Page {{ page }}</span>
+    <button class="btn danger close_button" name="close">Close Leads</button>
+    <!-- <input type="button" value="Close 'em!" class="close_button" name="close" /> -->
 </form>
 <form class="offset" id="bottom_nav">
-<input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
-<input type="button" name="prev" value="Prev" id="prev" />{% if are_more %} | <input type="button" name="next" value="Next" id="next" />{% endif %}
+    <span class="page">Page {{ page }}</span>
+    <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
+    <input type="button" name="prev" value="Prev" id="prev" class="btn default" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" id="next" class="btn default" />{% endif %}
 </form>
 <script type="text/javascript">
-var checko = false;
 var showit = function() {
     $('#content').fadeOut('fast', 'swing', function() {
         $('#loading').fadeIn('fast');
