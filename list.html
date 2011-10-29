@@ -1,6 +1,7 @@
 <form>
     <div class="clearfix">
         <div class="close_button_top">
+            <!-- <p>Close Date: <input type="text" id="datepicker" name="close_date"></p> -->
             <button class="btn danger close_button" name="close">Close Leads</button>
         </div>
         <form class="offset" id="top_nav">
@@ -63,33 +64,33 @@ var swapit = function(data) {
     });
 }
 $(function(){
-  $('.close_button').click(function(){
-      showit();
-      var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close=close";
-      $.post('/close', post_data, function(data) { swapit(data) });
-  })
-  $('.prev').click(function() {
-      showit();
-      var post_data = {
-          offset: $('#offset').val(),
-          prev: 'prev'
-      }
-      $.post("/list", post_data, function(data) { swapit(data) });
-  })
-  $('.next').click(function() {
-      showit();
-      var post_data = {
-          offset: $('#offset').val(),
-          next: 'next'
-      }
-      $.post("/list", post_data, function(data) { swapit(data) });
-  })
-  $('#select_all').click(function(){
-      if (!$('#select_all')[0].checked) {
-          $('input[type="checkbox"]').attr('checked', 'true');
-      } else {
-          $('input[type="checkbox"]').removeAttr('checked');
-      }
-  })
+    $('.close_button').click(function(){
+        showit();
+        var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close=close";
+        $.post('/close', post_data, function(data) { swapit(data) });
+    })
+    $('.prev').click(function() {
+        showit();
+        var post_data = {
+            offset: $('#offset').val(),
+            prev: 'prev'
+        }
+        $.post("/list", post_data, function(data) { swapit(data) });
+    })
+    $('.next').click(function() {
+        showit();
+        var post_data = {
+            offset: $('#offset').val(),
+            next: 'next'
+        }
+        $.post("/list", post_data, function(data) { swapit(data) });
+    })
+    $('#select_all').click(function(){
+        if (!$('#select_all')[0].checked) {
+            $('input[type="checkbox"]').attr('checked', 'true');
+        } else {
+            $('input[type="checkbox"]').removeAttr('checked');
+        }
+    })
 });
 </script>
