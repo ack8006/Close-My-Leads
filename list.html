@@ -65,17 +65,35 @@ var swapit = function(data) {
         $('#content').fadeIn('fast');
     });
 }
+var human_to_epoch = function(input_date) {
+    var split_date = input_date.split('/');
+    var d = new Date(split_date[2], split_date[0], split_date[1], 0,0,0,0);
+    var close_time = d.getTime()/1000;
+    return close_time.toString();
+}
 $(function(){
-    
+    var confirmation ='You have selected leads on this page.\nAre you sure you want to leave them in their current state?'
     $('input#datepicker').datepicker();
     $.datepicker.setDefaults($.datepicker.regional['']);
     
     $('.close_button').click(function(){
+        if (!$('#datepicker')[0].value) {
+            alert('Please select a date.');
+            return false;
+        } else if (!$(':checked').length) {
+            alert('No leads are selected!');
+            return false;
+        }
+        var raw_date = $('#datepicker').val();
+        var close_time = human_to_epoch(raw_date);
         showit();
-        var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close=close";
+        var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close_time="+close_time;
         $.post('/close', post_data, function(data) { swapit(data) });
     })
     $('.prev').click(function() {
+        if ($(':checked').length) {
+            confirm(confirmation);
+        }
         showit();
         var post_data = {
             offset: $('#offset').val(),
@@ -84,6 +102,9 @@ $(function(){
         $.post("/list", post_data, function(data) { swapit(data) });
     })
     $('.next').click(function() {
+        if ($(':checked').length) {
+            confirm(confirmation)
+        }
         showit();
         var post_data = {
             offset: $('#offset').val(),
