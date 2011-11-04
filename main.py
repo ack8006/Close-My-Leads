@@ -43,9 +43,11 @@ class List(webapp.RequestHandler):
             leads = leads[:20]
             page = int(offset)/20 + 1
             for lead in leads:
-                close_time_secs = lead["closedAt"]/1000
-                close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
-                lead["closedAt"] = close_time
+                if lead["closedAt"]:
+                    close_time_secs = lead["closedAt"]/1000
+                    close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
+                    lead["closedAt"] = close_time
+            
             values = {
                 'leads':leads,
                 'offset':offset,
@@ -70,7 +72,7 @@ class List(webapp.RequestHandler):
             for lead in leads:
                 close_time_secs = lead["closedAt"]/1000
                 close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
-                lead["closedAt"] = close_time
+                #lead["closedAt"] = close_time
             values = {
                 'leads':leads,
                 'offset':offset,
@@ -105,12 +107,10 @@ class Close(webapp.RequestHandler):
         # close them leads!
         api_key = decoded_cookie_str(self.request.cookies['auth'])
         client = hapi.leads.LeadsClient(api_key)
-        leads_to_close = self.request.get_all('guid')
-        print leads_to_close
-        close_time = self.request.get('close_time')
-        print close_time
-        for lead in leads_to_close:
-            client.close_lead(lead, close_time)
+        leads_to_close = self.request.get_all('guid') #this is a list of guids
+        close_time = self.request.get('close_time') #returns the close time (only one)
+        for guid in leads_to_close:
+            client.close_lead(guid, close_time)
         values = {
             'params':None,
             'offset':self.request.get('offset')

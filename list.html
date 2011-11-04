@@ -28,7 +28,7 @@
         <td><input type="checkbox" class="lead_box" name="guid" value="{{ lead.guid }}" /></td>
         <td class="name">{{ lead.firstName }} {{ lead.lastName }}</td>
         <td class="email">{{ lead.email }}</td>
-        <td class="status"> {% ifnotequal lead.closedAt "01/01/1970" %}
+        <td class="status"> {% ifnotequal lead.closedAt 0 %}
                                 Closed: {{ lead.closedAt }}
                             {% else %}Open Lead
                             {% endifnotequal %}</td>
@@ -67,8 +67,8 @@ var swapit = function(data) {
 }
 var human_to_epoch = function(input_date) {
     var split_date = input_date.split('/');
-    var d = new Date(split_date[2], split_date[0], split_date[1], 0,0,0,0);
-    var close_time = d.getTime()/1000;
+    var d = new Date(split_date[2], split_date[0]-1, split_date[1], 0,0,0,0);
+    var close_time = d.getTime();
     return close_time.toString();
 }
 $(function(){
@@ -86,9 +86,12 @@ $(function(){
         };
         var raw_date = $('#datepicker').val();
         var close_time = human_to_epoch(raw_date);
-        showit();
         var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close_time=" + close_time;
-        confirm(post_data)
+        alert(post_data);
+        if (!confirm(post_data)) {
+            return false;
+        };
+        showit();
         $.post('/close', post_data, function(data) { swapit(data) });
     })
     $('.prev').click(function() {
