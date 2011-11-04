@@ -103,7 +103,6 @@ class Close(webapp.RequestHandler):
     
     def post(self):
         # close them leads!
-        # Get lead time from parameter
         api_key = decoded_cookie_str(self.request.cookies['auth'])
         client = hapi.leads.LeadsClient(api_key)
         leads_to_close = self.request.get_all('guid')
