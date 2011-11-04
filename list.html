@@ -83,11 +83,12 @@ $(function(){
         } else if (!$(':checked').length) {
             alert('No leads are selected!');
             return false;
-        }
+        };
         var raw_date = $('#datepicker').val();
         var close_time = human_to_epoch(raw_date);
         showit();
-        var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close_time="+close_time;
+        var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close_time=" + close_time;
+        confirm(post_data)
         $.post('/close', post_data, function(data) { swapit(data) });
     })
     $('.prev').click(function() {
@@ -113,6 +114,7 @@ $(function(){
         $.post("/list", post_data, function(data) { swapit(data) });
     })
     $('#select_all').click(function(){
+        // doesn't work yet... 
         if (!$('#select_all')[0].checked) {
             $('input[type="checkbox"]').attr('checked', 'true');
         } else {

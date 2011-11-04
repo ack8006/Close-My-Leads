@@ -107,8 +107,10 @@ class Close(webapp.RequestHandler):
         client = hapi.leads.LeadsClient(api_key)
         leads_to_close = self.request.get_all('guid')
         print leads_to_close
+        close_time = self.request.get('close_time')
+        print close_time
         for lead in leads_to_close:
-            client.close_lead(lead)
+            client.close_lead(lead, close_time)
         values = {
             'params':None,
             'offset':self.request.get('offset')
