@@ -3,6 +3,7 @@
 import wsgiref.handlers
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+import datetime
 from helpers import *
 import hapi.leads
 
@@ -41,11 +42,16 @@ class List(webapp.RequestHandler):
                 more = False
             leads = leads[:20]
             page = int(offset)/20 + 1
+            for lead in leads:
+                close_time_secs = lead["closedAt"]/1000
+                close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
+                lead["closedAt"] = close_time
             values = {
                 'leads':leads,
                 'offset':offset,
                 'are_more':more,
                 'page':page,
+                #'close_time':close_times,
             }
             self.response.out.write(template.render('list.html', values))
         else:
@@ -61,6 +67,10 @@ class List(webapp.RequestHandler):
                 more = False
             leads = leads[:20]
             page = int(offset)/20 + 1
+            for lead in leads:
+                close_time_secs = lead["closedAt"]/1000
+                close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
+                lead["closedAt"] = close_time
             values = {
                 'leads':leads,
                 'offset':offset,
@@ -93,6 +103,7 @@ class Close(webapp.RequestHandler):
     
     def post(self):
         # close them leads!
+        # Get lead time from parameter
         api_key = decoded_cookie_str(self.request.cookies['auth'])
         client = hapi.leads.LeadsClient(api_key)
         leads_to_close = self.request.get_all('guid')

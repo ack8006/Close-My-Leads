@@ -28,9 +28,9 @@
         <td><input type="checkbox" class="lead_box" name="guid" value="{{ lead.guid }}" /></td>
         <td class="name">{{ lead.firstName }} {{ lead.lastName }}</td>
         <td class="email">{{ lead.email }}</td>
-        <td class="status"> {% ifnotequal lead.closedAt 0 %}
-                                {{ lead.closedAt }}
-                            {% else %}Open
+        <td class="status"> {% ifnotequal lead.closedAt "01/01/1970" %}
+                                Closed: {{ lead.closedAt }}
+                            {% else %}Open Lead
                             {% endifnotequal %}</td>
         <td class="guid">{{ lead.guid }}</td>
     </tr>
@@ -38,6 +38,7 @@
     </table>
     <div class="clearfix">
         <div class="close_button_bottom">
+            Close Date: <input type="text" id="datepicker" />
             <button class="btn danger close_button" name="close">Close Leads</button>
         </div>
         <!-- <input type="button" value="Close 'em!" class="close_button" name="close" /> -->
