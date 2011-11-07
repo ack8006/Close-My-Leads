@@ -87,12 +87,11 @@ $(function(){
         var raw_date = $('#datepicker').val();
         var close_time = human_to_epoch(raw_date);
         var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close_time=" + close_time;
-        alert(post_data);
-        if (!confirm(post_data)) {
+        if (!confirm("Are you sure?")) {
             return false;
         };
         showit();
-        $.post('/close', post_data, function(data) { swapit(data) });
+        $.post("/close", post_data, function(data) { swapit(data) });
     })
     $('.prev').click(function() {
         if ($(':checked').length) {
@@ -116,7 +115,7 @@ $(function(){
         }
         $.post("/list", post_data, function(data) { swapit(data) });
     })
-    $('#select_all').click(function(){
+    $('#select_all').mousedown(function(){
         // doesn't work yet... 
         if (!$('#select_all')[0].checked) {
             $('input[type="checkbox"]').attr('checked', 'true');

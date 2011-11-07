@@ -31,7 +31,7 @@ class List(webapp.RequestHandler):
     def get(self):
         if self.request.cookies['auth']:
             api_key = decoded_cookie_str(self.request.cookies['auth'])
-            offset = '0'
+            offset = self.request.get('offset') or '0'
             try:
                 leads = list_twenty_leads_from_offset(self, offset)
             except:
@@ -72,7 +72,7 @@ class List(webapp.RequestHandler):
             for lead in leads:
                 close_time_secs = lead["closedAt"]/1000
                 close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
-                #lead["closedAt"] = close_time
+                lead["closedAt"] = close_time
             values = {
                 'leads':leads,
                 'offset':offset,
@@ -108,14 +108,11 @@ class Close(webapp.RequestHandler):
         api_key = decoded_cookie_str(self.request.cookies['auth'])
         client = hapi.leads.LeadsClient(api_key)
         leads_to_close = self.request.get_all('guid') #this is a list of guids
-        close_time = self.request.get('close_time') #returns the close time (only one)
+        close_time = self.request.get('close_time')
+        offset = self.request.get('offset')
         for guid in leads_to_close:
             client.close_lead(guid, close_time)
-        values = {
-            'params':None,
-            'offset':self.request.get('offset')
-        }
-        self.response.out.write('Closed %s: %s' % (leads_to_close, api_key))
+        self.redirect('/list?offset=%s' % offset)
 
 def main():
     app = webapp.WSGIApplication([
