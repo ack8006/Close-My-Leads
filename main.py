@@ -88,14 +88,9 @@ class Num_Pages(webapp.RequestHandler):
         pass
     
     def post(self):
-        offset = 0
-        while True:
-            offset += 20
-            if not is_lead(self, offset):
-                break
-        page = list(range(offset/20 + 1))
+        pages = 4
         values = {
-            'pages':page,
+            'pages':pages,
         }
         self.response.out.write(template.render('pages.html', values))
 
@@ -114,12 +109,35 @@ class Close(webapp.RequestHandler):
             client.close_lead(guid, close_time)
         self.redirect('/list?offset=%s' % offset)
 
+class Search(webapp.RequestHandler):
+    def get(self):
+        self.redirect('/')
+
+    def post(self):
+        api_key = decoded_cookie_str(self.request.cookies['auth'])
+        client = hapi.leads.LeadsClient(api_key)
+        search_term = self.request.get('search_term')
+        offset  = self.request.get('offset') or '0'
+        # determine if the search term is an email address
+        if '@' in search_term:
+            params = {'email': search_term}
+        else:
+            params = {'lastName': search_term}
+        leads_results = client.get_leads(api_key, params)
+        values = {
+            'leads': leads_results,
+            'search': True,
+            'offset': '0',
+        }
+        self.response.out.write(template.render('list.html', values)) 
+
 def main():
     app = webapp.WSGIApplication([
         (r'/', Welcome),
         (r'/a', Reload),
         (r'/list', List),
-        (r'/close', Close)
+        (r'/close', Close),
+        (r'/search', Search)
         ], debug=True)
     wsgiref.handlers.CGIHandler().run(app)
 
