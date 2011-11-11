@@ -1,6 +1,5 @@
 import time
 from base import BaseClient
-#from pprint import pprint
 
 LEADS_API_VERSION = '1'
 
@@ -20,8 +19,8 @@ SORT_OPTIONS = [
     'address',
     'phone',
     'insertedAt',
-    'fce.convertDate',
-    'lce.convertDate',
+    'firstConvertedAt',
+    'lastConvertedAt',
     'lastModifiedAt',
     'closedAt']
 SORT_OPTIONS_DICT = list_to_dict_with_python_case_keys(SORT_OPTIONS)
@@ -42,62 +41,43 @@ SEARCH_OPTIONS = [
     'stopTime',
     'timePivot',
     'excludeConversionEvents',
-<<<<<<< HEAD
-    'emailOptOut',
-=======
     'optout',  #should be email opt-out
->>>>>>> 2a8b0adc70070d342a2e14b01d1209a2ffecfb33
     'eligibleForEmail',
     'bounced',
     'isNotImported']
 SEARCH_OPTIONS_DICT = list_to_dict_with_python_case_keys(SEARCH_OPTIONS)
-BOOLEAN_SEARCH_OPTIONS = set([
+BOOLEAN_SEARCH_OPTIONS = [
     'excludeConversionEvents',
-    'emailOptOut',
+    'optout',
     'eligibleForEmail',
     'bounced',
-    'isNotImported'])
+    'isNotImported']
 
-MAX_BATCH=100
 
 class LeadsClient(BaseClient):
     """
     The hapipy Leads client uses the _make_request method to call the API for data.  It returns a python object translated from the json return
     """
 
-    def camelcase_search_options(self, options):
-        """change all underscored variants back to what the API is expecting"""
-        new_options = {}
-        for key in options:
-            value = options[key]
-            new_key = SEARCH_OPTIONS_DICT.get(key, key)
-            if new_key == 'sort':
-                value = SORT_OPTIONS_DICT.get(value, value)
-            elif new_key == 'timePivot':
-                value = TIME_PIVOT_OPTIONS_DICT.get(value, value)
-            elif new_key in BOOLEAN_SEARCH_OPTIONS:
-                value = str(value).lower()
-            new_options[new_key] = value
-        return new_options
-
     def _get_path(self, subpath):
-        return 'leads/v%s/%s' % (self.options.get('version') or LEADS_API_VERSION, subpath)
+        return 'leads/v%s/%s' % (LEADS_API_VERSION, subpath)
   
     def get_lead(self, guid, **options):
         return self.get_leads(guid, **options)[0]
 
     def get_leads(self, *guids, **options):
         """Supports all the search parameters in the API as well as python underscored variants"""
-        options = self.camelcase_search_options(options)
         params = {}
         for i in xrange(len(guids)):
             params['guids[%s]'%i] = guids[i]
-        for k in options.keys():
-            if k in SEARCH_OPTIONS:
-                params[k] = options[k]
-                del options[k]
+        for o in options:
+            key = SEARCH_OPTIONS_DICT.get(o, None)
+            if key and options[o] is not None:
+                params[key] = options[o]
+                if o in BOOLEAN_SEARCH_OPTIONS:
+                    params[key] = str(params[key]).lower()
         return self._call('list/', params, **options)
-
+    
     def update_lead(self, guid, update_data=None, **options):
         update_data = update_data or {}
         update_data['guid'] = guid

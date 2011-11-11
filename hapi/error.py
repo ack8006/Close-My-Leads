@@ -7,8 +7,8 @@ class HapiError(ValueError):
         self.request = request
 
     def __str__(self):
-        return "\n---- request ----\n%s %s%s [timeout=%s]\n\n---- body ----\n%s\n\n---- headers ----\n%s\n\n---- result ----\n%s %s\n\n---- body ----\n%s\n\n---- headers ----\n%s" % (
-            self.request['method'], self.request['host'], self.request['url'], self.request['timeout'],
+        return "\n---- request ----\n%s %s%s\n\n---- body ----\n%s\n\n---- headers ----\n%s\n\n---- result ----\n%s %s\n\n---- body ----\n%s\n\n---- headers ----\n%s" % (
+            self.request['method'], self.request['host'], self.request['url'],
             self.request['data'],
             self.request['headers'],
             self.result.status, self.result.reason,
