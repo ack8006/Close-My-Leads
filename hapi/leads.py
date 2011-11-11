@@ -42,7 +42,11 @@ SEARCH_OPTIONS = [
     'stopTime',
     'timePivot',
     'excludeConversionEvents',
+<<<<<<< HEAD
     'emailOptOut',
+=======
+    'optout',  #should be email opt-out
+>>>>>>> 2a8b0adc70070d342a2e14b01d1209a2ffecfb33
     'eligibleForEmail',
     'bounced',
     'isNotImported']
