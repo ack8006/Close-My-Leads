@@ -60,6 +60,9 @@ def format_date(date_string):
 def unix_to_date(unix_time):
     pass
 
+def num_pages(self):
+    pass
+
 
 demo_leads_response = [
     {
