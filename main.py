@@ -114,16 +114,18 @@ class Search(webapp.RequestHandler):
         self.redirect('/')
 
     def post(self):
-        api_key = decoded_cookie_str(self.request.cookies['auth'])
-        client = hapi.leads.LeadsClient(api_key)
         search_term = self.request.get('search_term')
         offset  = self.request.get('offset') or '0'
         # determine if the search term is an email address
         if '@' in search_term:
-            params = {'email': search_term}
+            params = ('email', search_term)
         else:
-            params = {'lastName': search_term}
-        leads_results = client.get_leads(api_key, params)
+            params = ('lastName', search_term)
+        leads_results = search_leads(self, params)
+        for lead in leads_results:
+            close_time_secs = lead["closedAt"]/1000
+            close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
+            lead["closedAt"] = close_time
         values = {
             'leads': leads_results,
             'search': True,
