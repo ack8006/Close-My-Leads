@@ -1,0 +1,11 @@
+Get the benefits of Closed Loop Marketing in your marketing analytics 
+data by closing several leads at once using Close Them Leads! 
+
+You will also want to create a file called supa_secret.py to hold your
+encryption key. You can name your key 'secret_key' if you want this
+code to run out of the box.
+
+If you do not include a supa_secret.py file that has an encryption key
+of the correct length (16 characters), the cookie string that gets set
+will be base64 encoded, but not encrypted. Don't let this happen to you!
+
