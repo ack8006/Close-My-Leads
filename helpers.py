@@ -2,6 +2,8 @@ from django.utils import simplejson as json
 import urllib2
 import base64
 import time
+import datetime
+
 try:
     # if keys are present, encrypt the cookies
     from supa_secret import secret_key
@@ -88,7 +90,7 @@ def format_date(date_string):
     
 
 def unix_to_date(unix_time):
-    pass
+    return datetime.datetime.fromtimestamp(int(unix_time)).strftime('%m/%d/%Y')
 
 def num_pages(self):
     pass
