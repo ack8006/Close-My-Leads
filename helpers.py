@@ -3,13 +3,23 @@ import urllib2
 import base64
 import time
 import Crypto.Cipher.AES as aes
+from supa_secret import secret_key
 
+PADDING = '{' #because our API key will never contain this character :)
+
+BLOCK_SIZE = 32
+
+def pad_string(raw_string):
+    output = raw_string + (BLOCK_SIZE - len(raw_string) % BLOCK_SIZE)*PADDING
+    return output
 
 def decoded_cookie_str(encoded_cookie_str):
-    return base64.b64decode(encoded_cookie_str)
+    cipher = aes.new(secret_key)
+    return cipher.decrypt(base64.b64decode(encoded_cookie_str)).rstrip(PADDING)
 
 def encoded_cookie_str(raw_cookie_str):
-    return base64.b64encode(raw_cookie_str)
+    cipher = aes.new(secret_key)
+    return base64.b64encode(cipher.encrypt(pad_string(raw_cookie_str)))
 
 def setcookie(self, raw_key):
     self.response.headers['Set-Cookie'] = 'auth='+encoded_cookie_str(raw_key)
