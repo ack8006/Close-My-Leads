@@ -5,8 +5,11 @@ import time
 try:
     # if keys are present, encrypt the cookies
     from supa_secret import secret_key
-    # we only need Crypto if we have keys!
-    import Crypto.Cipher.AES as aes
+    if len(secret_key) not in [16, 24, 32]:
+        raise
+    else:
+        # we only need Crypto if we have keys!
+        import Crypto.Cipher.AES as aes
     keys_exist = True
 except:
     # if no keys are present, just base64 encode the cookies... This should never happen though.
