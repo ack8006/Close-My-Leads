@@ -6,6 +6,6 @@ encryption key. You can name your key 'secret_key' if you want this
 code to run out of the box.
 
 If you do not include a supa_secret.py file that has an encryption key
-of the correct length (16 characters), the cookie string that gets set
+of the correct length (16, 24, or 32 characters), the cookie string that gets set
 will be base64 encoded, but not encrypted. Don't let this happen to you!
 
