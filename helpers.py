@@ -2,8 +2,16 @@ from django.utils import simplejson as json
 import urllib2
 import base64
 import time
-import Crypto.Cipher.AES as aes
-from supa_secret import secret_key
+try:
+    # if keys are present, encrypt the cookies
+    from supa_secret import secret_key
+    # we only need Crypto if we have keys!
+    import Crypto.Cipher.AES as aes
+    keys_exist = True
+except:
+    # if no keys are present, just base64 encode the cookies... This should never happen though.
+    # this try/except is only for testing purposes.
+    keys_exist = False
 
 PADDING = '{' #because our API key will never contain this character :)
 BLOCK_SIZE = 32
@@ -18,12 +26,18 @@ def pad_string(raw_string):
     return output
 
 def decoded_cookie_str(encoded_cookie_str):
-    cipher = aes.new(secret_key)
-    return cipher.decrypt(base64.b64decode(encoded_cookie_str)).rstrip(PADDING)
+    if keys_exist:
+        cipher = aes.new(secret_key)
+        return cipher.decrypt(base64.b64decode(encoded_cookie_str)).rstrip(PADDING)
+    else:
+        return base64.b64decode(encoded_cookie_str)
 
 def encoded_cookie_str(raw_cookie_str):
-    cipher = aes.new(secret_key)
-    return base64.b64encode(cipher.encrypt(pad_string(raw_cookie_str)))
+    if keys_exist:
+        cipher = aes.new(secret_key)
+        return base64.b64encode(cipher.encrypt(pad_string(raw_cookie_str)))
+    else:
+        return base64.b64encode(raw_cookie_str)
 
 def setcookie(self, raw_key):
     self.response.headers['Set-Cookie'] = 'auth='+encoded_cookie_str(raw_key)
