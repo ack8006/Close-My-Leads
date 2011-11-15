@@ -36,6 +36,8 @@ class List(webapp.RequestHandler):
             try:
                 leads = list_twenty_leads_from_offset(self, offset)
             except:
+                # you are probably not connected to the internet. Are you on a plane?
+                # I was when I wrote this part!
                 leads = demo_leads_response
             try:
                 more = leads[20]
