@@ -5,7 +5,6 @@ use_library('django', '1.2')
 import wsgiref.handlers
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
-import datetime
 from helpers import *
 import hapi.leads
 
@@ -47,7 +46,7 @@ class List(webapp.RequestHandler):
             for lead in leads:
                 if lead["closedAt"]:
                     close_time_secs = lead["closedAt"]/1000
-                    close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
+                    close_time = unix_to_date(close_time_secs)
                     lead["closedAt"] = close_time
             
             values = {
@@ -73,7 +72,7 @@ class List(webapp.RequestHandler):
             page = int(offset)/20 + 1
             for lead in leads:
                 close_time_secs = lead["closedAt"]/1000
-                close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
+                close_time = unix_to_date(close_time_secs)
                 lead["closedAt"] = close_time
             values = {
                 'leads':leads,
@@ -126,7 +125,7 @@ class Search(webapp.RequestHandler):
         leads_results = search_leads(self, params)
         for lead in leads_results:
             close_time_secs = lead["closedAt"]/1000
-            close_time = datetime.datetime.fromtimestamp(int(close_time_secs)).strftime('%m/%d/%Y')
+            close_time = unix_to_date(close_time_secs)
             lead["closedAt"] = close_time
         values = {
             'leads': leads_results,
