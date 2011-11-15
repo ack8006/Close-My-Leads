@@ -6,8 +6,12 @@ import Crypto.Cipher.AES as aes
 from supa_secret import secret_key
 
 PADDING = '{' #because our API key will never contain this character :)
-
 BLOCK_SIZE = 32
+LIST_URL = 'https://hubapi.com/leads/v1/list/?hapikey=%s&excludeConversionEvents=true&max=21&offset=%s&sort=lastName'
+SEARCH_URL = 'https://hubapi.com/leads/v1/list/?hapikey=%s&excludeConversionEvents=true&max=21&%s=%s'
+LEAD_URL = 'https://hubapi.com/leads/v1/list/?hapikey=%s&excludeConversionEvents=true&max=1&offset=%s&sort=lastName'
+SETTINGS_URL = "https://hubapi.com/settings/v1/settings?hapikey=%s"
+ 
 
 def pad_string(raw_string):
     output = raw_string + (BLOCK_SIZE - len(raw_string) % BLOCK_SIZE)*PADDING
@@ -27,31 +31,22 @@ def setcookie(self, raw_key):
 
 def list_twenty_leads_from_offset(self, offset):
     decoded_cookie = decoded_cookie_str(self.request.cookies.get('auth'))
-    url = 'https://hubapi.com/leads/v1/list/?hapikey='+decoded_cookie
-    url += '&excludeConversionEvents=true&max=21'
-    url += '&offset='+str(offset)
-    url += '&sort=lastName'
+    url = LIST_URL % (decoded_cookie, offset)
     return json.load(urllib2.urlopen(url))
 
 def search_leads(self, param):
     # takes a tuple in the form of (key, value)
     decoded_cookie = decoded_cookie_str(self.request.cookies.get('auth'))
-    url = 'https://hubapi.com/leads/v1/list/?hapikey='+decoded_cookie
-    url += '&excludeConversionEvents=true&max=21'
-    url += '&%s=%s' % param
+    url = SEARCH_URL % (decoded_cookie, param[0], param[1])
     return json.load(urllib2.urlopen(url))
 
 def is_lead(self, offset):
     decoded_cookie = decoded_cookie_str(self.request.cookies.get('auth'))
-    url = 'https://hubapi.com/leads/v1/list/?hapikey='+decoded_cookie
-    url += '&excludeConversionEvents=true&max=1'
-    url += '&offset='+str(offset)
-    url += '&sort=lastName'
+    url = LEAD_URL % (decoded_cookie, offset)
     return json.load(urllib2.urlopen(url))
 
 def portal_from_key(self):
-    addr="https://hubapi.com/settings/v1/settings?hapikey="
-    addr += self.request.get('api_key')
+    addr = SETTINGS_URL % self.request.get('api_key')
     try:
         real_portal = str(json.load(urllib2.urlopen(addr))[0]['portalId'])
     except:
