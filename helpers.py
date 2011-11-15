@@ -2,7 +2,7 @@ from django.utils import simplejson as json
 import urllib2
 import base64
 import time
-#import Crypto
+import Crypto.Cipher.AES as aes
 
 
 def decoded_cookie_str(encoded_cookie_str):
@@ -21,6 +21,14 @@ def list_twenty_leads_from_offset(self, offset):
     url += '&excludeConversionEvents=true&max=21'
     url += '&offset='+str(offset)
     url += '&sort=lastName'
+    return json.load(urllib2.urlopen(url))
+
+def search_leads(self, param):
+    # takes a tuple in the form of (key, value)
+    decoded_cookie = decoded_cookie_str(self.request.cookies.get('auth'))
+    url = 'https://hubapi.com/leads/v1/list/?hapikey='+decoded_cookie
+    url += '&excludeConversionEvents=true&max=21'
+    url += '&%s=%s' % param
     return json.load(urllib2.urlopen(url))
 
 def is_lead(self, offset):
