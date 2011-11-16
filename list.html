@@ -1,49 +1,48 @@
-<form>
-    <div class="clearfix">
-        <div class="close_button_top">
-            Close Date: <input type="text" id="datepicker" />
-            <!-- <p>Close Date: <input type="text" id="datepicker" name="close_date"></p> -->
-            <input type="button" class="btn danger close_button" name="close" value="Close Leads" />
-        </div>
-        <form class="offset" id="top_nav">
-            <div class="pagenum_top">
-                <span class="page">Page {{ page }}</span>
-            </div>
-            <div class="prevnext_top">
-                <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
-                <input type="button" name="prev" value="Prev" class="btn default prev" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" class="btn default next" />{% endif %}
-                <input type="text" placeholder="Search Leads by Email" class="search_leads" /> <input type="button" value="search" id="search_butto" class="btn default" />
-            </div>
-        </form>
+<div class="clearfix">
+    <div class="close_button_top">
+        Close Date: <input type="text" id="datepicker" />
+        <!-- <p>Close Date: <input type="text" id="datepicker" name="close_date"></p> -->
+        <input type="button" class="btn danger close_button" name="close" value="Close Leads" />
     </div>
-    <table class="list">
-    <tr>
-        <td class="checkboxes"><input type="checkbox" id="select_all" /></td>
-        <td class="bold name">Full Name</td>
-        <td class="bold email">Email</td>
-        <td class="bold status">Status</td>
-        <td class="bold guid">Guid</td>
-    </tr>
-    {% for lead in leads %}
-    <tr>
-        <td><input type="checkbox" class="lead_box" name="guid" value="{{ lead.guid }}" /></td>
-        <td class="name">{{ lead.firstName }} {{ lead.lastName }}</td>
-        <td class="email">{{ lead.email }}</td>
-        <td class="status"> {% ifnotequal lead.closedAt 0 %}
-                                Closed: {{ lead.closedAt }}
-                            {% else %}Open Lead
-                            {% endifnotequal %}</td>
-        <td class="guid">{{ lead.guid }}</td>
-    </tr>
-    {% endfor %}
-    </table>
-    <div class="clearfix">
-        <div class="close_button_bottom">
-            <input type="button" class="btn danger close_button" name="close" value="Close Leads" />
+    <form class="offset" id="top_nav">
+        <div class="prevnext_top">
+            <input type="text" placeholder="Search Leads by Email" class="search_leads" /> <input type="button" value="search" id="search_butto" class="btn default" />
         </div>
-        <!-- <input type="button" value="Close 'em!" class="close_button" name="close" /> -->
+        <div class="pagenum_top">
+            <span class="page">Page {{ page }}</span>
+            <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
+            <input type="button" name="prev" value="Prev" class="btn default prev" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" class="btn default next" />{% endif %}
+        </div>
+    </form>
+</div>
+<table class="list">
+<tr>
+    <td class="checkboxes"><input type="checkbox" id="select_all" /></td>
+    <td class="bold name">Full Name</td>
+    <td class="bold email">Email</td>
+    <td class="bold status">Status</td>
+    <td class="bold guid">Guid</td>
+</tr>
+{% for lead in leads %}
+<tr>
+    <td><input type="checkbox" class="lead_box" name="guid" value="{{ lead.guid }}" /></td>
+    <td class="name">{{ lead.firstName }} {{ lead.lastName }}</td>
+    <td class="email">{{ lead.email }}</td>
+    <td class="status"> {% ifnotequal lead.closedAt 0 %}
+                            Closed: {{ lead.closedAt }}
+                        {% else %}Open Lead
+                        {% endifnotequal %}</td>
+    <td class="guid">{{ lead.guid }}</td>
+</tr>
+{% endfor %}
+</table>
+<div class="clearfix">
+    <div class="close_button_bottom">
+        <input type="button" class="btn danger close_button" name="close" value="Close Leads" />
     </div>
-</form>
+    <!-- <input type="button" value="Close 'em!" class="close_button" name="close" /> -->
+</div>
+
 <form class="offset" id="bottom_nav">
     <div class="pagenum_bot">
         <span class="page">Page {{ page }}</span>
