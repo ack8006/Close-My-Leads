@@ -7,6 +7,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from helpers import *
 import hapi.leads
+import cgi
 
 class Welcome(webapp.RequestHandler):
     def get(self):
@@ -22,8 +23,8 @@ class Verify(webapp.RequestHandler):
     
     def post(self):
         real_portal = portal_from_key(self)
-        if real_portal == str(self.request.get('portalId')):
-            api_key = str(self.request.get('api_key'))
+        if real_portal == str(cgi.escape(self.request.get("portalId"))):
+            api_key = str(cgi.escape(self.request.get("api_key")))
             setcookie(self, api_key)
             self.redirect('/list')
         else:
@@ -38,8 +39,8 @@ class Reload(webapp.RequestHandler):
 
 class List(webapp.RequestHandler):
     def get(self):
-        if self.request.cookies['auth']:
-            api_key = decoded_cookie_str(self.request.cookies['auth'])
+        if self.request.cookies["auth"]:
+            api_key = decoded_cookie_str(self.request.cookies["auth"])
             offset = self.request.get('offset') or '0'
             try:
                 leads = list_twenty_leads_from_offset(self, offset)
