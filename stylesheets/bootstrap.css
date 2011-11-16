@@ -1,5 +1,12 @@
 /* Adrian Edits for Close Them Leads app */
 
+#loading {
+  display:none;
+  position:absolute;
+  left:450px;
+  top:300px;
+}
+
 .validate {
   color:#c43c35;
   font-family: "Helvetica Neue",Liberation Sans,Arial,FreeSans,sans-serif!important;
@@ -10,10 +17,9 @@
 
 #title-header {
   position:relative;
-  width:900px;
+  width:1024px;
   text-align:left;
-  margin:20px auto;
-  padding-left:75px;
+  margin:20px 0 0 50px;
 }
 
 #title-header h1 {
@@ -38,15 +44,11 @@
 
 #wrapper {
   position:relative;
-  width:900px;
+  width:1024px;
   margin:0 auto;
   text-align:left;
-  /* background: #f6f6f6; */
-  /* border: 1px solid #666; */
   border-radius:4px;
-  padding:20px;
-  /* height: 630px; */
-  margin-top:20px;
+  min-height:800px;
 }
 
 #hub-id-error {
@@ -97,14 +99,6 @@ table.list {
   border:1px solid #DDD;
 }
 
-#loading {
-  display:none;
-  position: absolute;
-  left: 450px;
-  top: 300px;
-  margin:0 auto;
-}
-
 .title {
   margin-top: -7px;
 }
@@ -127,12 +121,6 @@ table.list {
 
 .checkboxes {
   width:20px;
-}
-
-.page {
-  float:right;
-  padding-right: 26px;
-  padding-top: 25px;
 }
 
 

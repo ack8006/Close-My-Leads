@@ -56,14 +56,14 @@
 {% block scripts %}
 <script type="text/javascript">
 var showit = function() {
-    $('#content').fadeOut('fast', 'swing', function() {
-        $('#loading').fadeIn('fast');
+    jq('#content').fadeOut('fast', 'swing', function() {
+        jq('#loading').fadeIn('fast');
     });
 }
 var swapit = function(data) {
-    $('#content').html(data);
-    $('#loading').fadeOut('fast', 'swing', function() {
-        $('#content').fadeIn('fast');
+    jq('#content').html(data);
+    jq('#loading').fadeOut('fast', 'swing', function() {
+        jq('#content').fadeIn('fast');
     });
 }
 var human_to_epoch = function(input_date) {
@@ -72,62 +72,62 @@ var human_to_epoch = function(input_date) {
     var close_time = d.getTime();
     return close_time.toString();
 }
-$(function(){
+jq(function(){
     var confirmation ='You have selected leads on this page.\nAre you sure you want to leave them in their current state?'
-    $('input#datepicker').datepicker();
-    $.datepicker.setDefaults($.datepicker.regional['']);
+    jq('input#datepicker').datepicker();
+    jq.datepicker.setDefaults(jq.datepicker.regional['']);
     
-    $('.close_button').click(function(){
-        if (!$('#datepicker')[0].value) {
+    jq('.close_button').click(function(){
+        if (!jq('#datepicker')[0].value) {
             alert('Please select a date.');
             return false;
-        } else if (!$(':checked').length) {
+        } else if (!jq(':checked').length) {
             alert('No leads are selected!');
             return false;
         };
-        var raw_date = $('#datepicker').val();
+        var raw_date = jq('#datepicker').val();
         var close_time = human_to_epoch(raw_date);
-        var post_data = $('.lead_box:checked').serialize() + "&offset=" + $('#offset').val() + "&close_time=" + close_time;
+        var post_data = jq('.lead_box:checked').serialize() + "&offset=" + jq('#offset').val() + "&close_time=" + close_time;
         if (!confirm("Are you sure?")) {
             return false;
         };
         showit();
-        $.post("/close", post_data, function(data) { swapit(data) });
+        jq.post("close", post_data, function(data) { swapit(data) });
     })
-    $('.prev').click(function() {
-        if ($(':checked').length) {
+    jq('.prev').click(function() {
+        if (jq(':checked').length) {
             confirm(confirmation);
         }
         showit();
         var post_data = {
-            offset: $('#offset').val(),
+            offset: jq('#offset').val(),
             prev: 'prev'
         }
-        $.post("/list", post_data, function(data) { swapit(data) });
+        jq.post("list", post_data, function(data) { swapit(data) });
     })
-    $('.next').click(function() {
-        if ($(':checked').length) {
+    jq('.next').click(function() {
+        if (jq(':checked').length) {
             confirm(confirmation)
         }
         showit();
         var post_data = {
-            offset: $('#offset').val(),
+            offset: jq('#offset').val(),
             next: 'next'
         }
-        $.post("/list", post_data, function(data) { swapit(data) });
+        jq.post("list", post_data, function(data) { swapit(data) });
     })
-    $('#select_all').mousedown(function(){
+    jq('#select_all').mousedown(function(){
         // doesn't work yet... 
-        if (!$('#select_all')[0].checked) {
-            $('input[type="checkbox"]').attr('checked', 'true');
+        if (!jq('#select_all')[0].checked) {
+            jq('input[type="checkbox"]').attr('checked', 'true');
         } else {
-            $('input[type="checkbox"]').removeAttr('checked');
+            jq('input[type="checkbox"]').removeAttr('checked');
         }
     })
-    $('#search_butto').click(function(){
-        var post_data = { search_term: $('.search_leads').val() };
+    jq('#search_butto').click(function(){
+        var post_data = { search_term: jq('.search_leads').val() };
         showit();
-        $.post('/search', post_data, function(data){ swapit(data) });
+        jq.post('search', post_data, function(data){ swapit(data) });
     })
 });
 </script>

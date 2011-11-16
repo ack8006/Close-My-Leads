@@ -13,6 +13,14 @@ class Welcome(webapp.RequestHandler):
         self.response.out.write(template.render('welcome.html', None))
     
     def post(self):
+        pass
+    
+
+class Verify(webapp.RequestHandler):
+    def get(self):
+        pass
+    
+    def post(self):
         real_portal = portal_from_key(self)
         if real_portal == str(self.request.get('portalId')):
             api_key = str(self.request.get('api_key'))
@@ -60,7 +68,7 @@ class List(webapp.RequestHandler):
             }
             self.response.out.write(template.render('list.html', values))
         else:
-            self.redirect('/')
+            self.redirect('/home')
     
     def post(self):
         if self.request.cookies['auth']:
@@ -84,7 +92,7 @@ class List(webapp.RequestHandler):
             }
             self.response.out.write(template.render('list.html', values))
         else:
-            self.redirect('/')
+            self.redirect('/home')
 
 class Num_Pages(webapp.RequestHandler):
     def get(self):
@@ -99,7 +107,7 @@ class Num_Pages(webapp.RequestHandler):
 
 class Close(webapp.RequestHandler):
     def get(self):
-        self.redirect('/')
+        self.redirect('/home')
     
     def post(self):
         # close them leads!
@@ -114,7 +122,7 @@ class Close(webapp.RequestHandler):
 
 class Search(webapp.RequestHandler):
     def get(self):
-        self.redirect('/')
+        self.redirect('/home')
 
     def post(self):
         search_term = self.request.get('search_term')
@@ -139,6 +147,7 @@ class Search(webapp.RequestHandler):
 def main():
     app = webapp.WSGIApplication([
         (r'/', Welcome),
+        (r'/home', Verify),
         (r'/a', Reload),
         (r'/list', List),
         (r'/close', Close),

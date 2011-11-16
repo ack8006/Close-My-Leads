@@ -4,7 +4,7 @@
 
 {% block content_area %}
 <div id="loading">
-    <img src="/images/ajax-loader.gif" />
+    <img src="images/ajax-loader.gif" />
 </div><!-- loading -->
 <div id="content">
     <form>
@@ -32,39 +32,41 @@
 {% endblock content_area %}
 {% block scripts %}
 <script type="text/javascript">
+var jq;
+window.jq = jQuery.noConflict(true);
 var showit = function() {
-    $('#content').fadeOut('fast', 'swing', function() {
-        $('#loading').fadeIn('fast');
+    jq('#content').fadeOut('fast', 'swing', function() {
+        jq('#loading').fadeIn('fast');
     });
 }
 var swapit = function(data) {
-    $('#content').html(data);
-    $('#loading').fadeOut('fast', 'swing', function() {
-        $('#content').fadeIn('fast');
+    jq('#content').html(data);
+    jq('#loading').fadeOut('fast', 'swing', function() {
+        jq('#content').fadeIn('fast');
     });
 }
-$(function() {
-    $('#submit').click(function() {
-        if (!$('#portalId').val() || $('#portalId').val()=='None') {
-            $('.validate.portal').show();
+jq(function() {
+    jq('#submit').click(function() {
+        if (!jq('#portalId').val() || jq('#portalId').val()=='None') {
+            jq('.validate.portal').show();
             return false;
         }
-        if ($('#portalId').val()) {
-            $('.validate.portal').hide();
+        if (jq('#portalId').val()) {
+            jq('.validate.portal').hide();
         }
-        if (!$('#api_key').val()) {
-            $('.validate.key').show();
+        if (!jq('#api_key').val()) {
+            jq('.validate.key').show();
             return false;
         }
-        if ($('#api_key').val()) {
-            $('.validate.key').hide();
+        if (jq('#api_key').val()) {
+            jq('.validate.key').hide();
         }
         showit();
     var post_data = {
-            portalId: $('#portalId').val(),
-            api_key: $('#api_key').val()
+            portalId: jq('#portalId').val(),
+            api_key: jq('#api_key').val()
         }
-        $.post("/", post_data, function(data) { swapit(data) });
+        jq.post("home", post_data, function(data) { swapit(data) });
     })
 })
 </script>

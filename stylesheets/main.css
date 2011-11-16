@@ -8,7 +8,7 @@ body {
   color: red;
   display:none;
 }
-
+/*
 #wrapper {
   position:relative;
   width:900px;
@@ -20,7 +20,7 @@ body {
   padding:20px;
   height: 630px;
 }
-
+*/
 .bold {
   font-weight:bold;
 }
@@ -61,10 +61,4 @@ table.list {
 
 .checkboxes {
   width:20px;
-}
-
-#page {
-  float:right;
-  padding-right: 26px;
-  padding-top: 25px;
 }
