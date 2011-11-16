@@ -92,7 +92,7 @@ $(function(){
             return false;
         };
         showit();
-        $.post("/close", post_data, function(data) { swapit(data) });
+        $.post("close", post_data, function(data) { swapit(data) });
     })
     $('.prev').click(function() {
         if ($(':checked').length) {
@@ -103,7 +103,7 @@ $(function(){
             offset: $('#offset').val(),
             prev: 'prev'
         }
-        $.post("/list", post_data, function(data) { swapit(data) });
+        $.post("list", post_data, function(data) { swapit(data) });
     })
     $('.next').click(function() {
         if ($(':checked').length) {
@@ -114,7 +114,7 @@ $(function(){
             offset: $('#offset').val(),
             next: 'next'
         }
-        $.post("/list", post_data, function(data) { swapit(data) });
+        $.post("list", post_data, function(data) { swapit(data) });
     })
     $('#select_all').mousedown(function(){
         // doesn't work yet... 
@@ -127,7 +127,7 @@ $(function(){
     $('#search_butto').click(function(){
         var post_data = { search_term: $('.search_leads').val() };
         showit();
-        $.post('/search', post_data, function(data){ swapit(data) });
+        $.post('search', post_data, function(data){ swapit(data) });
     })
 });
 </script>

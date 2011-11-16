@@ -53,7 +53,7 @@ $(function() {
             portalId: $('#portalId').val(),
             api_key: $('#api_key').val()
         }
-        $.post("/", post_data, function(data) { swapit(data) });
+        $.post("home", post_data, function(data) { swapit(data) });
     })
 })
 </script>
