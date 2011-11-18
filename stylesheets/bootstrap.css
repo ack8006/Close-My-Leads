@@ -127,7 +127,9 @@ table.list {
 .page {
   margin-left:-50px;
 }
-
+.top_cont {
+  margin-bottom:-30px;
+}
 /*!
  * Bootstrap v1.3.0
  *
