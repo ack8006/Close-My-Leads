@@ -116,13 +116,10 @@ jq(function(){
         }
         jq.post("list", post_data, function(data) { swapit(data) });
     })
-    jq('#select_all').mousedown(function(){
-        // doesn't work yet... 
-        if (!jq('#select_all')[0].checked) {
-            jq('input[type="checkbox"]').attr('checked', 'true');
-        } else {
-            jq('input[type="checkbox"]').removeAttr('checked');
-        }
+    jq('#select_all').click(function(){
+        jq('.lead_box').each(function(){
+            jq(this).attr('checked', !jq(this)[0].checked);
+        })
     })
     jq('#search_butto').click(function(){
         var post_data = { search_term: jq('.search_leads').val() };
