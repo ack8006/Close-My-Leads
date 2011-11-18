@@ -124,7 +124,9 @@ table.list {
 .checkboxes {
   width:20px;
 }
-
+.page {
+  margin-left:-50px;
+}
 
 /*!
  * Bootstrap v1.3.0
