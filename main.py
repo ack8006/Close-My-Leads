@@ -15,7 +15,6 @@ class Welcome(webapp.RequestHandler):
     
     def post(self):
         pass
-    
 
 class Verify(webapp.RequestHandler):
     def get(self):
@@ -123,7 +122,7 @@ class Close(webapp.RequestHandler):
 
 class Search(webapp.RequestHandler):
     def get(self):
-        self.redirect('/home')
+        self.redirect('#')
 
     def post(self):
         search_term = self.request.get('search_term')
