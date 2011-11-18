@@ -7,6 +7,10 @@
   top:300px;
 }
 
+#top-nav {
+    padding:0!important;
+}
+
 .validate {
   color:#c43c35;
   font-family: "Helvetica Neue",Liberation Sans,Arial,FreeSans,sans-serif!important;
@@ -19,7 +23,7 @@
   position:relative;
   width:1024px;
   text-align:left;
-  margin:20px 0 0 50px;
+  margin:15px 0 0 25px;
 }
 
 #title-header h1 {
@@ -62,17 +66,16 @@
 
 .close_button_top {
   float:left;
-  margin:15px 0 0 26px;
+  margin-top:37px;
 }
 
 .prevnext_top {
-  float:right;
-  margin:15px 10px 0 0;
+  margin-left:731px;
 }
 
 .pagenum_top {
-  /* float:right; */
-  /* margin-top:-15px; */
+  margin-top:10px;
+  margin-left:863px;
 }
 
 .close_button_bottom {
@@ -95,7 +98,6 @@
 
 table.list {
   margin:0 auto;
-  width:850px;
   border:1px solid #DDD;
 }
 
