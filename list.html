@@ -48,9 +48,11 @@
 </div>
 
 <form class="offset" id="bottom_nav">
+{% if not search %}
     <div class="pagenum_bot">
         <span class="page">Page {{ page }}</span>
     </div>
+{% endif %}
     <div class="prevnext_bot">
         <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
 {% if not search %}
