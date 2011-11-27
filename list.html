@@ -15,6 +15,7 @@
             <input type="button" name="prev" value="Prev" class="btn default prev" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" class="btn default next" />{% endif %}
 {% else %}
             <input type="button" name="prev" value="Back to list" class="btn default prev" />
+            <input type="text" name="passed_term" value="{{ search_term }}" id="passed_term" style="display:none" />
 {% endif %}
         </div>
     </form>
@@ -94,10 +95,12 @@ jq(function(){
         };
         var raw_date = jq('#datepicker').val();
         var close_time = human_to_epoch(raw_date);
-        var post_data = jq('.lead_box:checked').serialize() + "&offset=" + jq('#offset').val() + "&close_time=" + close_time;
+        var search_term = jq('#passed_term').val() || '';
+        var post_data = jq('.lead_box:checked').serialize() + "&offset=" + jq('#offset').val() + "&close_time=" + close_time + "&search=" + search_term;
         if (!confirm("Are you sure?")) {
             return false;
         };
+        alert(post_data)
         showit();
         jq.post("close", post_data, function(data) { swapit(data) });
     })
