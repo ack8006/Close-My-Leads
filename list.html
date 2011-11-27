@@ -1,4 +1,4 @@
-<div class="clearfix">
+<div class="clearfix top_cont">
     <div class="close_button_top">
         Close Date: <input type="text" id="datepicker" />
         <!-- <p>Close Date: <input type="text" id="datepicker" name="close_date"></p> -->
@@ -9,9 +9,13 @@
             <input type="text" placeholder="Search Leads by Email" class="search_leads" /> <input type="button" value="search" id="search_butto" class="btn default" />
         </div>
         <div class="pagenum_top">
-            <span class="page">Page {{ page }}</span>
             <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
+{% if not search %}
+            <span class="page">Page {{ page }}</span>
             <input type="button" name="prev" value="Prev" class="btn default prev" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" class="btn default next" />{% endif %}
+{% else %}
+            <input type="button" name="prev" value="Back to list" class="btn default prev" />
+{% endif %}
         </div>
     </form>
 </div>
