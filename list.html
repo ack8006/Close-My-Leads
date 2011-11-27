@@ -53,7 +53,9 @@
     </div>
     <div class="prevnext_bot">
         <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
+{% if not search %}
         <input type="button" name="prev" value="Prev" class="btn default prev" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" class="btn default next" />{% endif %}
+{% endif %}
     </div>
 </form>
 {% block scripts %}
