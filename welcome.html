@@ -33,7 +33,7 @@ function clearCookie(name, domain, path){
     var path = path || "/";
     document.cookie = name + "=; expires=" + new Date + "; domain=" + domain + "; path=" + path; return document.cookie
 };
-clearCookie('close-my-leads.auth', '.app.hubspot.com', '/market/99154/canvas/close-my-leads');
+clearCookie('close-my-leads.auth', '.app.hubspot.com', location.pathname.split('/').slice(0, 5).join('/'));
 var showit = function() {
     jq('#content').fadeOut('fast', 'swing', function() {
         jq('#loading').fadeIn('fast');
