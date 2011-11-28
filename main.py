@@ -113,12 +113,31 @@ class Close(webapp.RequestHandler):
         # close them leads!
         api_key = decoded_cookie_str(self.request.cookies['auth'])
         client = hapi.leads.LeadsClient(api_key)
+        search_term = self.request.get('search')
         leads_to_close = self.request.get_all('guid') #this is a list of guids
         close_time = self.request.get('close_time')
         offset = self.request.get('offset')
         for guid in leads_to_close:
             client.close_lead(guid, close_time)
-        self.redirect('/list?offset=%s' % offset)
+        if search_term:
+            if '@' in search_term:
+                params = ('email', search_term)
+            else:
+                params = ('lastName', search_term)
+            leads_results = search_leads(self, params)
+            for lead in leads_results:
+                close_time_secs = lead["closedAt"]/1000
+                close_time = unix_to_date(close_time_secs)
+                lead["closedAt"] = close_time
+            values = {
+                'leads': leads_results,
+                'search': True,
+                'offset': '0',
+                'search_term': search_term,
+            }
+            self.response.out.write(template.render('list.html', values))
+        else:
+            self.redirect('/list?offset=%s' % offset)
 
 class Search(webapp.RequestHandler):
     def get(self):
@@ -141,6 +160,7 @@ class Search(webapp.RequestHandler):
             'leads': leads_results,
             'search': True,
             'offset': '0',
+            'search_term': search_term,
         }
         self.response.out.write(template.render('list.html', values)) 
 
