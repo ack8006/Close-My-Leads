@@ -97,9 +97,6 @@ jq(function(){
         var close_time = human_to_epoch(raw_date);
         var search_term = jq('#passed_term').val() || '';
         var post_data = jq('.lead_box:checked').serialize() + "&offset=" + jq('#offset').val() + "&close_time=" + close_time + "&search=" + search_term;
-        if (!confirm("Are you sure?")) {
-            return false;
-        };
         showit();
         jq.post("close", post_data, function(data) { swapit(data) });
     })
