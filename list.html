@@ -100,7 +100,6 @@ jq(function(){
         if (!confirm("Are you sure?")) {
             return false;
         };
-        alert(post_data)
         showit();
         jq.post("close", post_data, function(data) { swapit(data) });
     })
