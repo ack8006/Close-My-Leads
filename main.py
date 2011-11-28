@@ -27,7 +27,7 @@ class Verify(webapp.RequestHandler):
             setcookie(self, api_key)
             self.redirect('/list')
         else:
-            self.redirect('/')
+            self.redirect('/a')
 
 class Reload(webapp.RequestHandler):
     def get(self):
@@ -177,3 +177,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
