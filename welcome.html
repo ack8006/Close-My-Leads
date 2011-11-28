@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block page_title %}Welcome{% endblock page_title%}
+
+{% block content_area %}
+<div id="loading">
+    <img src="images/ajax-loader.gif" />
+</div><!-- loading -->
+<div id="content">
+    <form>
+        <fieldset>
+            <div class="clearfix">
+                <label for="portalId">Hub ID:</label>
+                <div class="input">
+                    <input class="xlarge" id="portalId" name="portalId" size="30" type="text" />&nbsp;<span class="validate portal">Hub ID is required!</span>
+                </div>
+            </div>
+            <div class="clearfix">
+                <label for="api_key">API Key:</label>
+                <div class="input">
+                    <input class="xlarge" id="api_key" name="api_key" size="30" type="text" />&nbsp;<span class="validate key">API key is required!</span>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="actions">
+                    <button type="button" id="submit" class="btn danger">Submit</button>&nbsp;<button type="reset" class="btn">Cancel</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div><!-- span-12 -->
+{% endblock content_area %}
+{% block scripts %}
+<script type="text/javascript">
+var jq;
+window.jq = jQuery.noConflict(true);
+var showit = function() {
+    jq('#content').fadeOut('fast', 'swing', function() {
+        jq('#loading').fadeIn('fast');
+    });
+}
+var swapit = function(data) {
+    jq('#content').html(data);
+    jq('#loading').fadeOut('fast', 'swing', function() {
+        jq('#content').fadeIn('fast');
+    });
+}
+jq(function() {
+    jq('#submit').click(function() {
+        if (!jq('#portalId').val() || jq('#portalId').val()=='None') {
+            jq('.validate.portal').show();
+            return false;
+        }
+        if (jq('#portalId').val()) {
+            jq('.validate.portal').hide();
+        }
+        if (!jq('#api_key').val()) {
+            jq('.validate.key').show();
+            return false;
+        }
+        if (jq('#api_key').val()) {
+            jq('.validate.key').hide();
+        }
+        showit();
+    var post_data = {
+            portalId: jq('#portalId').val(),
+            api_key: jq('#api_key').val()
+        }
+        jq.post("home", post_data, function(data) { swapit(data) });
+    })
+})
+</script>
+{% endblock scripts %}

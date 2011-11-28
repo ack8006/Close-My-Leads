@@ -1,0 +1,59 @@
+<span id="hub-id-error">Sorry, that HUB ID does not match the API key you entered!</span>
+<form>
+    <fieldset>
+        <div class="clearfix">
+            <label for="portalId">Hub ID:</label>
+            <div class="input">
+                <input class="xlarge" id="portalId" name="portalId" size="30" type="text" />&nbsp;<span class="validate portal">Hub ID is required!</span>
+            </div>
+        </div>
+        <div class="clearfix">
+            <label for="api_key">API Key:</label>
+            <div class="input">
+                <input class="xlarge" id="api_key" name="api_key" size="30" type="text" />&nbsp;<span class="validate key">API key is required!</span>
+            </div>
+        </div>
+        <div class="clearfix">
+            <div class="actions">
+                <button type="button" id="submit" class="btn danger">Submit</button>&nbsp;<button type="reset" class="btn">Cancel</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+<script type="text/javascript">
+var showit = function() {
+    $('#content').fadeOut('fast', 'swing', function() {
+        $('#loading').fadeIn('fast');
+    });
+}
+var swapit = function(data) {
+    $('#content').html(data);
+    $('#loading').fadeOut('fast', 'swing', function() {
+        $('#content').fadeIn('fast');
+    });
+}
+$(function() {
+    $('#submit').click(function() {
+        if (!$('#portalId').val() || $('#portalId').val()=='None') {
+            $('.validate.portal').show();
+            return false;
+        }
+        if ($('#portalId').val()) {
+            $('.validate.portal').hide();
+        }
+        if (!$('#api_key').val()) {
+            $('.validate.key').show();
+            return false;
+        }
+        if ($('#api_key').val()) {
+            $('.validate.key').hide();
+        }
+        showit();
+    var post_data = {
+            portalId: $('#portalId').val(),
+            api_key: $('#api_key').val()
+        }
+        $.post("home", post_data, function(data) { swapit(data) });
+    })
+})
+</script>
