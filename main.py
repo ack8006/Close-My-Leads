@@ -11,6 +11,8 @@ import cgi
 
 class Welcome(webapp.RequestHandler):
     def get(self):
+        self.response.headers['Set-Cookie'] = 'auth='+encoded_cookie_str(raw_key)
+        self.response.headers['Set-Cookie'] += '; Expires=Wed, 09 Jun 1970 10:18:14 GMT'
         self.response.out.write(template.render('welcome.html', None))
     
     def post(self):
@@ -22,7 +24,7 @@ class Verify(webapp.RequestHandler):
     
     def post(self):
         real_portal = portal_from_key(self)
-        if real_portal == str(cgi.escape(self.request.get("hubspot.marketplace.portal_id"))):
+        if real_portal == str(self.request.get("hubspot.marketplace.portal_id")):
             api_key = str(cgi.escape(self.request.get("api_key")))
             setcookie(self, api_key)
             self.redirect('/list')
