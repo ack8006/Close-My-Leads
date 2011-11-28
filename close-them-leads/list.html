@@ -1,66 +1,137 @@
-<div id="loading">
-    <img src="/images/ajax-loader.gif" />
-</div><!-- loading -->
-<div id="content">
-<form>
-    <table class="list">
-    <tr>
-        <td class="checkboxes">&nbsp;</td>
-        <td class="bold name">Full Name</td>
-        <td class="bold email">Email</td>
-        <td class="bold status">Status</td>
-        <td class="bold guid">Guid</td>
-    </tr>
-    {% for lead in leads %}
-    <tr>
-        <td><input type="checkbox" name="guid" id="{{ lead.guid }}" /></td>
-        <td class="name">{{ lead.firstName }} {{ lead.lastName }}</td>
-        <td class="email">{{ lead.email }}</td>
-        <td class="status"> {% ifnotequal lead.closedAt 0 %}
-                                {{ lead.closedAt }}
-                            {% else %}Open
-                            {% endifnotequal %}</td>
-        <td class="guid">{{ lead.guid }}</td>
-    </tr>
-    {% endfor %}
-    </table>
-    <br />
-    <input type="button" value="Close 'em!" id="close" name="close" /><span id="page">Page {{ page }}</span>
-</form>
+<div class="clearfix top_cont">
+    <div class="close_button_top">
+        Close Date: <input type="text" id="datepicker" />
+        <!-- <p>Close Date: <input type="text" id="datepicker" name="close_date"></p> -->
+        <input type="button" class="btn danger close_button" name="close" value="Close Leads" />
+    </div>
+    <form class="offset" id="top_nav">
+        <div class="prevnext_top">
+            <input type="text" placeholder="Search Leads by Email" class="search_leads" /> <input type="button" value="search" id="search_butto" class="btn default" />
+        </div>
+        <div class="pagenum_top">
+            <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
+{% if not search %}
+            <span class="page">Page {{ page }}</span>
+            <input type="button" name="prev" value="Prev" class="btn default prev" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" class="btn default next" />{% endif %}
+{% else %}
+            <input type="button" name="prev" value="Back to list" class="btn default prev" />
+            <input type="text" name="passed_term" value="{{ search_term }}" id="passed_term" style="display:none" />
+{% endif %}
+        </div>
+    </form>
+</div>
+<table class="list">
+<tr>
+    <td class="checkboxes"><input type="checkbox" id="select_all" /></td>
+    <td class="bold name">Full Name</td>
+    <td class="bold email">Email</td>
+    <td class="bold status">Status</td>
+    <td class="bold guid">Guid</td>
+</tr>
+{% for lead in leads %}
+<tr>
+    <td><input type="checkbox" class="lead_box" name="guid" value="{{ lead.guid }}" /></td>
+    <td class="name">{{ lead.firstName }} {{ lead.lastName }}</td>
+    <td class="email">{{ lead.email }}</td>
+    <td class="status"> {% ifnotequal lead.closedAt 0 %}
+                            Closed: {{ lead.closedAt }}
+                        {% else %}Open Lead
+                        {% endifnotequal %}</td>
+    <td class="guid">{{ lead.guid }}</td>
+</tr>
+{% endfor %}
+</table>
+<div class="clearfix">
+    <div class="close_button_bottom">
+        <input type="button" class="btn danger close_button" name="close" value="Close Leads" />
+    </div>
+    <!-- <input type="button" value="Close 'em!" class="close_button" name="close" /> -->
+</div>
+
 <form class="offset" id="bottom_nav">
-<input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
-<input type="button" name="prev" value="Prev" id="prev" />{% if are_more %} | <input type="button" name="next" value="Next" id="next" />{% endif %}
+{% if not search %}
+    <div class="pagenum_bot">
+        <span class="page">Page {{ page }}</span>
+    </div>
+{% endif %}
+    <div class="prevnext_bot">
+        <input type="text" name="offset" id="offset" value="{{offset}}" style="display:none" />
+{% if not search %}
+        <input type="button" name="prev" value="Prev" class="btn default prev" />{% if are_more %}&nbsp;<input type="button" name="next" value="Next" class="btn default next" />{% endif %}
+{% endif %}
+    </div>
 </form>
-</div><!-- content -->
+{% block scripts %}
 <script type="text/javascript">
-$('#prev').click(function() {
-    $('#content').fadeOut('fast', 'swing', function() {
-        $('#loading').fadeIn('fast');
+var showit = function() {
+    jq('#content').fadeOut('fast', 'swing', function() {
+        jq('#loading').fadeIn('fast');
     });
-    var post_data = {
-        offset: $('#offset').val(),
-        prev: 'prev'
-    }
-    $.post("/list", post_data, function(data) {
-        $('#content').html(data);
-        $('#loading').fadeOut('fast', 'swing', function() {
-            $('#content').fadeIn('fast');
-        });
-    })
-})
-$('#next').click(function() {
-    $('#content').fadeOut('fast', 'swing', function() {
-        $('#loading').fadeIn('fast');
+}
+var swapit = function(data) {
+    jq('#content').html(data);
+    jq('#loading').fadeOut('fast', 'swing', function() {
+        jq('#content').fadeIn('fast');
     });
-    var post_data = {
-        offset: $('#offset').val(),
-        next: 'next'
-    }
-    $.post("/list", post_data, function(data) {
-        $('#content').html(data);
-        $('#loading').fadeOut('fast', 'swing', function() {
-            $('#content').fadeIn('fast');
-        });
+}
+var human_to_epoch = function(input_date) {
+    var split_date = input_date.split('/');
+    var d = new Date(split_date[2], split_date[0]-1, split_date[1], 0,0,0,0);
+    var close_time = d.getTime();
+    return close_time.toString();
+}
+jq(function(){
+    var confirmation ='You have selected leads on this page.\nAre you sure you want to leave them in their current state?'
+    jq('input#datepicker').datepicker();
+    jq.datepicker.setDefaults(jq.datepicker.regional['']);
+    
+    jq('.close_button').click(function(){
+        if (!jq('#datepicker')[0].value) {
+            alert('Please select a date.');
+            return false;
+        } else if (!jq(':checked').length) {
+            alert('No leads are selected!');
+            return false;
+        };
+        var raw_date = jq('#datepicker').val();
+        var close_time = human_to_epoch(raw_date);
+        var search_term = jq('#passed_term').val() || '';
+        var post_data = jq('.lead_box:checked').serialize() + "&offset=" + jq('#offset').val() + "&close_time=" + close_time + "&search=" + search_term;
+        showit();
+        jq.post("close", post_data, function(data) { swapit(data) });
     })
-})
+    jq('.prev').click(function() {
+        if (jq(':checked').length) {
+            confirm(confirmation);
+        }
+        showit();
+        var post_data = {
+            offset: jq('#offset').val(),
+            prev: 'prev'
+        }
+        jq.post("list", post_data, function(data) { swapit(data) });
+    })
+    jq('.next').click(function() {
+        if (jq(':checked').length) {
+            confirm(confirmation)
+        }
+        showit();
+        var post_data = {
+            offset: jq('#offset').val(),
+            next: 'next'
+        }
+        jq.post("list", post_data, function(data) { swapit(data) });
+    })
+    jq('#select_all').click(function(){
+        jq('.lead_box').each(function(){
+            jq(this).attr('checked', !jq(this)[0].checked);
+        })
+    })
+    jq('#search_butto').click(function(){
+        var post_data = { search_term: jq('.search_leads').val() };
+        showit();
+        jq.post('search', post_data, function(data){ swapit(data) });
+    })
+});
 </script>
+{% endblock scripts %}
