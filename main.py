@@ -22,12 +22,12 @@ class Verify(webapp.RequestHandler):
     
     def post(self):
         real_portal = portal_from_key(self)
-        if real_portal == str(cgi.escape(self.request.get("portalId"))):
+        if real_portal == str(cgi.escape(self.request.get("hubspot.marketplace.portal_id"))):
             api_key = str(cgi.escape(self.request.get("api_key")))
             setcookie(self, api_key)
             self.redirect('/list')
         else:
-            self.redirect('/a')
+            self.redirect('/')
 
 class Reload(webapp.RequestHandler):
     def get(self):
@@ -107,7 +107,7 @@ class Num_Pages(webapp.RequestHandler):
 
 class Close(webapp.RequestHandler):
     def get(self):
-        self.redirect('/home')
+        self.redirect('/')
     
     def post(self):
         # close them leads!
