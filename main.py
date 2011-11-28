@@ -11,8 +11,6 @@ import cgi
 
 class Welcome(webapp.RequestHandler):
     def get(self):
-        self.response.headers['Set-Cookie'] = 'auth=none'
-        self.response.headers['Set-Cookie'] += '; Expires=Wed, 09 Jun 1970 10:18:14 GMT'
         self.response.out.write(template.render('welcome.html', None))
     
     def post(self):
