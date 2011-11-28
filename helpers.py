@@ -95,6 +95,17 @@ def unix_to_date(unix_time):
 def num_pages(self):
     pass
 
+def convert_lead_date(lead):
+    pass
+
+def set_vals_for_search(leads_results, search_term):
+    values = {
+        'leads': leads_results,
+        'search': True,
+        'offset': '0',
+        'search_term': search_term,
+    }
+    return values
 
 demo_leads_response = [
     {
