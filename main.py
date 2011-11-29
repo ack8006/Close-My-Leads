@@ -54,10 +54,7 @@ class List(webapp.RequestHandler):
             leads = leads[:20]
             page = int(offset)/20 + 1
             for lead in leads:
-                if lead["closedAt"]:
-                    close_time_secs = lead["closedAt"]/1000
-                    close_time = unix_to_date(close_time_secs)
-                    lead["closedAt"] = close_time
+                lead = convert_lead_date(lead)
             
             values = {
                 'leads':leads,
@@ -80,10 +77,10 @@ class List(webapp.RequestHandler):
                 more = False
             leads = leads[:20]
             page = int(offset)/20 + 1
+            
             for lead in leads:
-                close_time_secs = lead["closedAt"]/1000
-                close_time = unix_to_date(close_time_secs)
-                lead["closedAt"] = close_time
+                lead = convert_lead_date(lead)
+            
             values = {
                 'leads':leads,
                 'offset':offset,
@@ -117,24 +114,16 @@ class Close(webapp.RequestHandler):
         leads_to_close = self.request.get_all('guid') #this is a list of guids
         close_time = self.request.get('close_time')
         offset = self.request.get('offset')
+        
         for guid in leads_to_close:
             client.close_lead(guid, close_time)
+
         if search_term:
-            if '@' in search_term:
-                params = ('email', search_term)
-            else:
-                params = ('lastName', search_term)
+            params = parse_param(search_term)
             leads_results = search_leads(self, params)
             for lead in leads_results:
-                close_time_secs = lead["closedAt"]/1000
-                close_time = unix_to_date(close_time_secs)
-                lead["closedAt"] = close_time
-            values = {
-                'leads': leads_results,
-                'search': True,
-                'offset': '0',
-                'search_term': search_term,
-            }
+                lead = convert_lead_date(lead)
+            values = set_vals_for_search(leads_results, search_term)
             self.response.out.write(template.render('list.html', values))
         else:
             self.redirect('/list?offset=%s' % offset)
@@ -147,21 +136,12 @@ class Search(webapp.RequestHandler):
         search_term = self.request.get('search_term')
         offset  = self.request.get('offset') or '0'
         # determine if the search term is an email address
-        if '@' in search_term:
-            params = ('email', search_term)
-        else:
-            params = ('lastName', search_term)
+        params = parse_param(search_term)
         leads_results = search_leads(self, params)
+        
         for lead in leads_results:
-            close_time_secs = lead["closedAt"]/1000
-            close_time = unix_to_date(close_time_secs)
-            lead["closedAt"] = close_time
-        values = {
-            'leads': leads_results,
-            'search': True,
-            'offset': '0',
-            'search_term': search_term,
-        }
+            lead = convert_lead_date(lead)
+        values = set_vals_for_search(leads_results, search_term)
         self.response.out.write(template.render('list.html', values)) 
 
 def main():
