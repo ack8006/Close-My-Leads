@@ -96,7 +96,11 @@ def num_pages(self):
     pass
 
 def convert_lead_date(lead):
-    pass
+    if lead["closedAt"]:
+        close_time_secs = lead["closedAt"]/1000
+        close_time = unix_to_date(close_time_secs)
+        lead["closedAt"] = close_time
+    return lead
 
 def set_vals_for_search(leads_results, search_term):
     values = {
@@ -106,6 +110,13 @@ def set_vals_for_search(leads_results, search_term):
         'search_term': search_term,
     }
     return values
+
+def parse_param(param):
+    if '@' in search_term:
+        params = ('email', search_term)
+    else:
+        params = ('lastName', search_term)
+    return params
 
 demo_leads_response = [
     {
