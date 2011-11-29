@@ -111,7 +111,7 @@ def set_vals_for_search(leads_results, search_term):
     }
     return values
 
-def parse_param(param):
+def parse_param(search_term):
     if '@' in search_term:
         params = ('email', search_term)
     else:
