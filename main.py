@@ -128,6 +128,24 @@ class Close(webapp.RequestHandler):
         else:
             self.redirect('/list?offset=%s' % offset)
 
+class CloseCsv(webapp.RequestHandler):
+    def get(self):
+        self.response.out.write(template.render("csv.html", None))
+
+    def post(self):
+        api_key = decoded_cookie_str(self.request.cookies['auth'])
+        client = hapi.leads.LeadsClient(api_key)
+        csv = self.request.get('csv') #this should be a csv with headers like EMAIL and DATE
+        leads_to_close = parse_csv(csv)
+        for email, time in leads_to_close.items():
+            try:
+                lead_guid = search_leads(self, ('email', email))[0]['guid']
+            except:
+                continue
+            client.close_lead(lead_guid, time)
+            self.response.out.write("closed %s [guid %s] at %s" % (email, lead_guid, time))
+        self.response.out.write('done')
+
 class Search(webapp.RequestHandler):
     def get(self):
         self.redirect('#')
@@ -151,7 +169,8 @@ def main():
         (r'/a', Reload),
         (r'/list', List),
         (r'/close', Close),
-        (r'/search', Search)
+        (r'/search', Search),
+        (r'/csv', CloseCsv)
         ], debug=True)
     wsgiref.handlers.CGIHandler().run(app)
 

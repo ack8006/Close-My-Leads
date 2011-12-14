@@ -3,6 +3,7 @@ import urllib2
 import base64
 import time
 import datetime
+from sanetime import sanetime
 
 try:
     # if keys are present, encrypt the cookies
@@ -110,6 +111,22 @@ def set_vals_for_search(leads_results, search_term):
         'search_term': search_term,
     }
     return values
+
+def parse_csv(csv):
+    lines = csv.split('\n')
+    headers = lines[0].split(',')
+    headers = [term.lower().strip() for term in headers]
+    EMAIL_INDEX = headers.index('email')
+    DATE_INDEX = headers.index('date')
+    leads_to_close = {}
+    for line in lines[1:]:
+        line_ = line.split(',')
+        if len(line_) < 2:
+            continue
+        date = line_[DATE_INDEX].split('/')
+        st = sanetime(int(date[2]), int(date[0]), int(date[1]))
+        leads_to_close[line_[EMAIL_INDEX].strip()] = str(st.ms)
+    return leads_to_close
 
 def parse_param(search_term):
     if '@' in search_term:
