@@ -125,7 +125,7 @@ def parse_csv(csv):
             continue
         date = line_[DATE_INDEX].split('/')
         st = sanetime(int(date[2]), int(date[0]), int(date[1]))
-        leads_to_close[line_[EMAIL_INDEX].strip()] = str(st.ms)
+        leads_to_close[line_[EMAIL_INDEX].strip()] = str(st.ms).strip()
     return leads_to_close
 
 def parse_param(search_term):
