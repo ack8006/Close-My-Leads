@@ -67,5 +67,11 @@ jq(function(){
         showit();
         jq.post('search', post_data, function(data){ swapit(data) });
     })
+    jq('#csv_redirect').click(function(){
+	showit();
+        jq.get('csv', function(data){
+            swapit(data)
+        })
+    })
 });
 

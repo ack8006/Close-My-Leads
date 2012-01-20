@@ -11,7 +11,7 @@ import cgi
 
 class Welcome(webapp.RequestHandler):
     def get(self):
-        self.response.out.write(template.render('welcome.html', None))
+        self.redirect('/list')
     
     def post(self):
         pass
@@ -38,58 +38,116 @@ class Reload(webapp.RequestHandler):
 
 class List(webapp.RequestHandler):
     def get(self):
-        if self.request.cookies["auth"]:
-            api_key = decoded_cookie_str(self.request.cookies["auth"])
-            offset = self.request.get('offset') or '0'
-            try:
-                leads = list_twenty_leads_from_offset(self, offset)
-            except:
-                # you are probably not connected to the internet. Are you on a plane?
-                # I was when I wrote this part!
-                leads = demo_leads_response
-            try:
-                more = leads[20]
-            except:
-                more = False
-            leads = leads[:20]
-            page = int(offset)/20 + 1
-            for lead in leads:
-                lead = convert_lead_date(lead)
-            
-            values = {
-                'leads':leads,
-                'offset':offset,
-                'are_more':more,
-                'page':page,
-                #'close_time':close_times,
-            }
-            self.response.out.write(template.render('list.html', values))
-        else:
-            self.redirect('/home')
-    
-    def post(self):
-        if self.request.cookies['auth']:
-            offset = offset_from_page(self)
+        offset = self.request.get('offset') or '0'
+        try:
             leads = list_twenty_leads_from_offset(self, offset)
+        except Exception:
+            # you are probably not connected to the internet. Are you on a plane?
+            # I was when I wrote this part!
+            leads = demo_leads_response
+        try:
+            more = leads[20]
+        except IndexError:
+            more = False
+        leads = leads[:20]
+        page = int(offset)/20 + 1
+        for lead in leads:
+            lead = convert_lead_date(lead)
+        
+        values = {
+            'leads':leads,
+            'offset':offset,
+            'are_more':more,
+            'page':page,
+            #'close_time':close_times,
+        }
+        self.response.out.write(template.render('list.html', values))
+   
+    def post(self):
+        offset = offset_from_page(self)
+        leads = list_twenty_leads_from_offset(self, offset)
+        try:
+            more = leads[20]
+        except IndexError:
+            more = False
+        leads = leads[:20]
+        page = int(offset)/20 + 1
+        
+        for lead in leads:
+            lead = convert_lead_date(lead)
+        
+        values = {
+            'leads':leads,
+            'offset':offset,
+            'are_more':more,
+            'page':page,
+        }
+        self.response.out.write(template.render('list2.html', values))
+
+class List2(webapp.RequestHandler):
+    def get(self):
+        offset = self.request.get('offset') or '0'
+        leads = list_twenty_leads_from_offset(self, offset)
+        try:
+            more = leads[20]
+        except IndexError:
+            more = False
+        leads = leads[:20]
+        page = int(offset)/20 + 1
+        for lead in leads:
+            lead = convert_lead_date(lead)
+        values = {
+            'leads':leads,
+            'offset':offset,
+            'are_more':more,
+            'page':page,
+        }
+        self.response.out.write(template.render('list2.html', values))
+   
+    def post(self):
+        offset = offset_from_page(self)
+        leads = list_twenty_leads_from_offset(self, offset)
+        try:
+            more = leads[20]
+        except IndexError:
+            more = False
+        leads = leads[:20]
+        page = int(offset)/20 + 1
+        
+        for lead in leads:
+            lead = convert_lead_date(lead)
+        
+        values = {
+            'leads':leads,
+            'offset':offset,
+            'are_more':more,
+            'page':page,
+        }
+        self.response.out.write(template.render('list2.html', values))
+
+class CloseCsv(webapp.RequestHandler):
+    def get(self):
+        self.response.out.write(template.render("csv.html", None))
+
+    def post(self):
+        client = hapi.leads.LeadsClient(self.request.get('hubspot.marketplace.accessToken'))
+        csv = self.request.get('csv') # this should be a csv with headers like EMAIL and DATE
+        leads_to_close = parse_csv(csv)
+        successful_leads = {}
+        failed_leads = {}
+        
+        for email, time in leads_to_close.items():
             try:
-                more = leads[20]
-            except:
-                more = False
-            leads = leads[:20]
-            page = int(offset)/20 + 1
-            
-            for lead in leads:
-                lead = convert_lead_date(lead)
-            
-            values = {
-                'leads':leads,
-                'offset':offset,
-                'are_more':more,
-                'page':page,
-            }
-            self.response.out.write(template.render('list.html', values))
-        else:
-            self.redirect('/home')
+                lead_guid = search_leads(self, ('email', email))[0]['guid']
+            except IndexError:
+                failed_leads[email] = time
+                continue
+            client.close_lead(lead_guid, time)
+            successful_leads[email] = time
+        values = {'failure': failed_leads,
+                    'success': successful_leads
+        }
+        self.response.out.write(template.render('results.html', values)) 
 
 class Num_Pages(webapp.RequestHandler):
     def get(self):
@@ -108,7 +166,7 @@ class Close(webapp.RequestHandler):
     
     def post(self):
         # close them leads!
-        api_key = decoded_cookie_str(self.request.cookies['auth'])
+        api_key = self.request.get('hubspot.marketplace.accessToken')
         client = hapi.leads.LeadsClient(api_key)
         search_term = self.request.get('search')
         leads_to_close = self.request.get_all('guid') #this is a list of guids
@@ -124,34 +182,35 @@ class Close(webapp.RequestHandler):
             for lead in leads_results:
                 lead = convert_lead_date(lead)
             values = set_vals_for_search(leads_results, search_term)
-            self.response.out.write(template.render('list.html', values))
+            self.response.out.write(template.render('list2.html', values))
         else:
-            self.redirect('/list?offset=%s' % offset)
-
-class CloseCsv(webapp.RequestHandler):
-    def get(self):
-        self.response.out.write(template.render("csv.html", None))
-
-    def post(self):
-        api_key = decoded_cookie_str(self.request.cookies['auth'])
-        client = hapi.leads.LeadsClient(api_key)
-        csv = self.request.get('csv') #this should be a csv with headers like EMAIL and DATE
-        leads_to_close = parse_csv(csv)
-        for email, time in leads_to_close.items():
+            leads = list_twenty_leads_from_offset(self, offset)
             try:
-                lead_guid = search_leads(self, ('email', email))[0]['guid']
-            except:
-                continue
-            client.close_lead(lead_guid, time)
-            self.response.out.write("closed %s [guid %s] at %s" % (email, lead_guid, time))
-        self.response.out.write('done')
+                more = leads[20]
+            except IndexError:
+                more = False
+            leads = leads[:20]
+            page = int(offset)/20 + 1
+            for lead in leads:
+                lead = convert_lead_date(lead)
+            values = {
+                'leads':leads,
+                'offset':offset,
+                'are_more':more,
+                'page':page,
+            }
+            self.response.out.write(template.render('list2.html', values))
+
+class Status(webapp.RequestHandler):
+    def get(self):
+        self.response.out.write("SUCCESS")
 
 class Search(webapp.RequestHandler):
     def get(self):
         self.redirect('#')
 
     def post(self):
-        search_term = self.request.get('search_term')
+        search_term = self.request.get('search_term').strip()
         offset  = self.request.get('offset') or '0'
         # determine if the search term is an email address
         params = parse_param(search_term)
@@ -160,17 +219,19 @@ class Search(webapp.RequestHandler):
         for lead in leads_results:
             lead = convert_lead_date(lead)
         values = set_vals_for_search(leads_results, search_term)
-        self.response.out.write(template.render('list.html', values)) 
+        self.response.out.write(template.render('list2.html', values)) 
 
 def main():
     app = webapp.WSGIApplication([
-        (r'/', Welcome),
+        (r'/', List),
         (r'/home', Verify),
         (r'/a', Reload),
         (r'/list', List),
+        (r'/list2', List2),
         (r'/close', Close),
         (r'/search', Search),
-        (r'/csv', CloseCsv)
+        (r'/status', Status),
+        (r'/csv', CloseCsv),
         ], debug=True)
     wsgiref.handlers.CGIHandler().run(app)
 

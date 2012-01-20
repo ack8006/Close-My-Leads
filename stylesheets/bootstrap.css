@@ -69,13 +69,19 @@
   margin-top:37px;
 }
 
+.csv_top {
+  display:none;
+  margin-left:922px;
+  margin-bottom: 4px;
+}
+
 .prevnext_top {
   margin-left:731px;
 }
 
 .pagenum_top {
   margin-top:10px;
-  margin-left:863px;
+  margin-left:904px;
 }
 
 .close_button_bottom {

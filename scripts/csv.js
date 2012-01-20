@@ -9,7 +9,7 @@ var swapit = function(data) {
         jq('#content').fadeIn('fast');
     });
 }
-jq(function(){
+jq('#csv_submit').click(function(){
     if (!jq('#csv').val()) {
         alert("you didn't enter your csv!");
         return false;

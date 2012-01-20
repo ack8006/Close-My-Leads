@@ -1,0 +1,14 @@
+<div class="Results">
+    <div class="Failures">
+        <h3>Failures: </h3>
+        {% for email, val in failure.items %}
+            <p>{{email}}</p>
+        {% endfor %}
+    </div>
+    <div class="Successes">
+        <h3>Successes: </h3>
+        {% for email, val in success.items %}
+            <p>{{email}}</p>
+        {% endfor %}
+    </div>
+</div>

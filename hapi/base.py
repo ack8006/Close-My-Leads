@@ -32,7 +32,7 @@ class BaseClient(object):
 
     def _prepare_request(self, subpath, params, data, opts):
         params = params or {}
-        params['hapikey'] = self.api_key
+        params['access_token'] = self.api_key
         if opts.get('hub_id') or opts.get('portal_id'):
             params['portalId'] = opts.get('hub_id') or opts.get('portal_id')
         url = opts.get('url') or '/%s?%s' % (self._get_path(subpath), urllib.urlencode(params))
