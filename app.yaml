@@ -1,4 +1,4 @@
-application: closetester
+application: close-them-leads
 version: 7
 api_version: 1
 runtime: python
