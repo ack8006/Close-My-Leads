@@ -1,2 +1,0 @@
-class SaneTimeError(ValueError):
-    pass
