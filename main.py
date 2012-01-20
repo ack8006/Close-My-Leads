@@ -140,10 +140,10 @@ class CloseCsv(webapp.RequestHandler):
             try:
                 lead_guid = search_leads(self, ('email', email))[0]['guid']
             except IndexError:
-                failed_leads[email] = time
+                failed_leads[email] = unix_to_date(int(time)/1000)
                 continue
             client.close_lead(lead_guid, time)
-            successful_leads[email] = time
+            successful_leads[email] = unix_to_date(int(time)/1000)
         values = {'failure': failed_leads,
                     'success': successful_leads
         }

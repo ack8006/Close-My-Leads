@@ -1,9 +1,14 @@
 <form class="csv_field" id="csv_container">
     <div class="csv_field">
         <textarea name="csv" id="csv" rows="25" cols="80"></textarea>
+        <textarea name="Example" id="csv_text_example" disabled="disabled" rows="25" cols="80">
+            email,date
+            test@gmail.com,12/31/2001
+            random@hubspot.com,1/1/2002
+        </textarea>
     </div>
     <div>
-        <input type="button" class="btn primary danger" id="csv_submit" value="Submit!" />
+        <input type="button" class="btn primary csv" id="csv_submit" value="Submit!" />
     </div>
 </form>
 {% block scripts %}

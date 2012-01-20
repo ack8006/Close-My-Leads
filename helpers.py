@@ -84,7 +84,9 @@ def parse_csv(csv):
         timeStr = str(date[2]) + " " +month+" "+ day
         firstTime = time.strptime(timeStr, "%Y %m %d")
         st = time.mktime(firstTime)
-        day = 60*60*24
+        #Used so that the close date of leads page as well as json call line up
+        #Time in the two places is apparently different in timezones
+        day = 60*60*18
         st =str(int(st) + day) + '000'
         leads_to_close[line_[EMAIL_INDEX].strip()] = str(st)
     return leads_to_close
