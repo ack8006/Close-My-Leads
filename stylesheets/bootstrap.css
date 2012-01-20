@@ -71,8 +71,9 @@
 
 .csv_top {
   display:none;
-  margin-left:922px;
-  margin-bottom: 4px;
+  position: relative;
+  top: -100px;
+  left: 10px;
 }
 
 .prevnext_top {
